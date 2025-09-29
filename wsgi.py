@@ -75,13 +75,13 @@ def create_staff_command(name, password):
     if not staff:
         print("Could not create staff user")
     else:
-        print(f'Staff member {staff.name} created')
+        print(f'Staff member {staff.username} created')
 
 @staff_cli.command("clock", help="Clock in/out of a shift")
 @click.argument("type", type=click.Choice(["in", "out"], case_sensitive=False))
 @click.argument("shiftID", type=int)
-def clock_staff_command(type, shiftID):
-    string = clockInOut(shiftID, type)
+def clock_staff_command(type, shiftid):
+    string = clockInOut(shiftid, type)
     print(string)
 
 app.cli.add_command(staff_cli)
@@ -104,15 +104,15 @@ def create_admin_command(name, password):
     if not admin:
         print("Could not create admin")
     else:
-        print(f'Admin {admin.name} created')
+        print(f'Admin {admin.username} created')
 
 @admin_cli.command("schedule", help='Schedules a shift for a staff user')
 @click.argument("staffID", type=int)
 @click.argument("adminID", type=int)
 @click.argument("startTime")
 @click.argument("endTime")
-def schedule_shift_command(staffID, adminID, startTime, endTime):
-    shift = schedule(staffID, adminID, startTime, endTime)
+def schedule_shift_command(staffid, adminid, starttime, endtime):
+    shift = schedule(staffid, adminid, starttime, endtime)
     if not shift:
         print("Failed to schedule shift")
     else:
@@ -128,12 +128,12 @@ def create_report_command():
     if not report:
         print("Error creating report")
     else:
-        print(f'Report created.\n {listreports()}')
+        print(f'Report created.\n {listReports()}')
 
 @admin_cli.command("report", help="View a report by its ID")
 @click.argument("reportID", type=int)
-def view_report_command(reportID):
-    report = getReport(reportID)
+def view_report_command(reportid):
+    report = getReport(reportid)
     if not report:
         print("No report found with that ID")
     else:
