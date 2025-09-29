@@ -3,7 +3,7 @@ from App.database import db
 from datetime import datetime
 
 def createAdmin(name, password):
-    newAdmin = Admin(name=name, password=password)
+    newAdmin = Admin(username=name, password=password)
     db.session.add(newAdmin)
     db.session.commit()
     return newAdmin
@@ -30,7 +30,7 @@ def listAdmins():
     admins = Admin.query.all()
     str = ""
     for admin in admins:
-        str += f'User: {admin.id} - ID: {admin.name}\n'
+        str += f'User: {admin.id} - ID: {admin.username}\n'
     return str
 
 def getAdmin(id):
