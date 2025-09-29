@@ -1,26 +1,48 @@
-from werkzeug.security import check_password_hash, generate_password_hash
+from App.models import Staff, Shift
 from App.database import db
 from datetime import datetime
 
-class Staff(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username =  db.Column(db.String(60), nullable=False, unique=True)
-    password = db.Column(db.String(100), nullable=False)
-    Shifts = db.relationship('Shift', backref="staff")
-    
-    def __init__(self, username, password):
-        self.username = username
-        self.set_password(password)
+def createStaff(name, password):
+    newStaff = Staff(username=name, password=password)
+    db.session.add(newStaff)
+    db.session.commit()
+    return newStaff
 
-    def get_json(self):
-        return{
-            'id': self.id,
-            'username' : self.username,
-            'Shifts' : [shift.get_json() for shift in self.Shifts]
-        }
-
-    def set_password(self, password):
-        self.password = generate_password_hash(password)
+def clockInOut(shiftID, type, time=None):
+    shift = Shift.query.get(shiftID)
+    if not shift:
+        return "Invalid Shift ID"
     
-    def verify_password(self, password):
-        return check_password_hash(self.password, password)
+    if not time:
+        time = datetime.now()
+
+    if type == "in":
+        if shift.clockIn:
+            return "Already clocked in"
+        shift.clockIn = time
+    elif type == "out":
+        if shift.clockOut:
+            return "Already clocked out"
+        shift.clockOut = time
+    else:
+        return "Invalid type. The proper type format is (in/out)"
+
+    db.session.add(shift)
+    db.session.commit()
+    return f'Clocked {type} at {time.strftime("%d/%m/%Y %H:%M")}'
+
+def listStaff():
+    staff_list = Staff.query.all()
+    str = ""
+    for staff in staff_list:
+        str += f'ID: {staff.id}, Name: {staff.username}\n'
+    return str
+
+def getStaff(id):
+    return db.session.get(Staff, id)
+
+def deleteStaff(id):
+    staff = Staff.query.get(id)
+    if not staff: return None
+    db.session.delete(staff)
+    db.session.commit()
