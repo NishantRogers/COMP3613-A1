@@ -3,7 +3,7 @@ from App.database import db
 from datetime import datetime
 
 def createStaff(name, password):
-    newStaff = Staff(name=name, password=password)
+    newStaff = Staff(username=name, password=password)
     db.session.add(newStaff)
     db.session.commit()
     return newStaff
@@ -32,10 +32,10 @@ def clockInOut(shiftID, type, time=None):
     return f'Clocked {type} at {time.strftime("%d/%m/%Y %H:%M")}'
 
 def listStaff():
-    Staff = Staff.query.all()
+    staff_list = Staff.query.all()
     str = ""
-    for staff in Staff:
-        str += f'ID: {staff.id}, Name: {staff.name}\n'
+    for staff in staff_list:
+        str += f'ID: {staff.id}, Name: {staff.username}\n'
     return str
 
 def getStaff(id):
