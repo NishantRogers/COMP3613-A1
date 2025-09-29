@@ -9,7 +9,7 @@ def createRoster():
     roster = {}
     for staff in Staff.query.all():
         shifts = Shift.query.filter(Shift.staffID == staff.id, Shift.start >= start, Shift.start <= end).all()
-        roster[staff.name] = [f'{s.start.strftime("%d/%m/%Y %H:%M")} - {s.end.strftime("%d/%m/%Y %H:%M")}' for s in shifts]
+        roster[staff.username] = [f'{s.start.strftime("%d/%m/%Y %H:%M")} - {s.end.strftime("%d/%m/%Y %H:%M")}' for s in shifts]
     return roster
 
 def createReportData():
@@ -25,7 +25,7 @@ def createReportData():
         for shift in shifts:
             shiftIDs.append(shift.id)
             totalWorkedHours += shift.getHoursWorked()
-        data[staff.name] = {
+        data[staff.username] = {
             "totalWorkedHours": totalWorkedHours,
             "shiftIDs": shiftIDs
         }
